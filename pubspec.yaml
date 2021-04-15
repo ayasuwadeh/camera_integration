@@ -21,7 +21,14 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  camera:
+  camera: ^0.7.0+2
+  image_gallery_saver:
+  image_picker: ^0.6.7+22
+  share: ^0.6.5+4
+  keyboard_visibility: ^0.5.6
+
+
+
   path:
   path_provider:
   esys_flutter_share:
@@ -36,6 +43,7 @@ dependencies:
   cupertino_icons: ^1.0.0
 
 dev_dependencies:
+  gallery_saver:
   flutter_test:
     sdk: flutter
 

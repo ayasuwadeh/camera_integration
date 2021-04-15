@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'image_review.dart';
-
+import 'dart:io';
+import 'package:gallery_saver/gallery_saver.dart';
 class CameraPage extends StatefulWidget {
   CameraPage({Key key}) : super(key: key);
 
@@ -12,12 +17,11 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   CameraController _controller;
   List cameras;
-  
+
   int camerasIndex;
   Future<void> _controllerInitializer;
   bool flashOn = false;
   CameraLensDirection cameraLensDirection;
-
   Future<CameraDescription> getCamera() async {
      cameras = await availableCameras();
      camerasIndex=0;
@@ -112,14 +116,17 @@ class _CameraPageState extends State<CameraPage> {
                         Container(
                           height: 40,
                           child: IconButton(
-                            onPressed: () {
-                              toggleFlash();
-                            },
                             color: Colors.white,
                             icon: flashOn&&(camerasIndex!=1)
                                 ? Icon(Icons.flash_on)
                                 : Icon(Icons.flash_off),
+                            onPressed: () {
+                              if(camerasIndex==0)
+                                toggleFlash();
+                            },
+
                           ),
+
                         ),
                         InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(25)),
@@ -127,17 +134,20 @@ class _CameraPageState extends State<CameraPage> {
                             try {
                               // Ensure that the camera is initialized.
                               await _controllerInitializer;
+                              final path =
+                              join((await getTemporaryDirectory()).path, '${DateTime.now()}.png');
                               print('from taking picture');
                               // Attempt to take a picture and then get the location
                               // where the image file is saved.
                               final image = await _controller.takePicture();
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ImageReview(
                                     // Pass the automatically generated path to
                                     // the DisplayPictureScreen widget.
-                                    imagePath: image?.path,
+                                    imagePath: (image.path),
                                   ),
                                 ),
                               );
@@ -183,18 +193,19 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   void toggleFlash() {
+
+    setState(() {
+      flashOn = !flashOn;
+    });
     try
     {
-      flashOn?_controller.setFlashMode(FlashMode.off):_controller.setFlashMode(FlashMode.always);
+      flashOn?_controller.setFlashMode(FlashMode.torch):_controller.setFlashMode(FlashMode.off);
 
     }
     catch( e)
     {
-     print(e.toString());
+      print(e.toString());
     }
-    setState(() {
-      flashOn = !flashOn;
-    });
   }
 
   void toggleCameraLensDirection() {

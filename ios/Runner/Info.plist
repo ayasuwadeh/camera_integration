@@ -45,6 +45,9 @@
     <string>Enable myApp to access your camera to capture your photo</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Enable myApp to access mic to record your voice</string>
-
+    <key>NSPhotoLibraryUsageDescription</key>
+    <key>NSCameraUsageDescription </key>
+    <key>NSMicrophoneUsageDescription </key>
+    <string>this app needs to use photos</string>
 </dict>
 </plist>
